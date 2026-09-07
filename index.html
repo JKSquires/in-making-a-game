@@ -7,18 +7,13 @@
 <link rel="stylesheet" href="/styles.css">
 <link rel="stylesheet" href="./making_game.css">
 
-<style>
-img {
-	image-rendering: pixelated;
-}
-</style>
 </head>
 <body>
 <button onClick="handleToggleDarkModeButton()">Toggle Dark Mode</button>
 
 <h1>In Making a Game</h1>
 <p>Specifically, I'm making a game for the Game Boy Advance... because of course I'm making it for that system :) (love that thing).</p>
-<p>Here, I hope to document my process and progress as I go because I think it'll be interesting to look back at it all and see how I've grown. It'll also be a chance for me to document outside of comments and commits why I'm making the decisions that I am.</p>
+<p>Here, I hope to document my process and progress as I go because I think it'll be interesting to look back at it all and see how I've grown. It'll also be a chance for me to document outside of comments and commits why I'm making the decisions that I am. This also means that I'm going to document everything here in the order that it happens, so not everything that relates to one topic or another will be grouped together, sorry.</p>
 <p>This is just the side-project of all side-projects for me right now, so it'll very likely take me forever to finish. Also, because there will be times that I'll have huge gaps between programming sessions, this document will make it nice for me to look back and see what I was doing (again, outside of commits), but hopefully I won't forget too much...</p>
 <p>Also, note that I'm using <a href="https://github.com/JKSquires/gba-arm-assembler" target="_blank" rel="noopener noreferrer">my own assembler</a> for this game, and I'll try to note when I update things. As I start off, I'll be using version 0.1.</p>
 <p>For sprites and background tiles and stuff, I'm using my <a href="/gba-obj-sprite-maker" target="_blank" rel="noopener noreferrer">GBA OBJ Sprite Maker</a> tool, so the link is here for you too if you wanted it.</p>
@@ -31,6 +26,7 @@ img {
 <li><a href="#">In Making a Game</a></li>
 <li><ul>
 	<li><a href="#initial_idea">Initial Idea</a></li>
+	<li><a href="#music_ideas">Music Ideas</a></li>
 	<li><a href="#first_sprite">First Sprite</a></li>
 </ul></li>
 </ul>
@@ -64,7 +60,7 @@ img {
 		<td><img src="./img/ebbo_ica.png"></td>
 		<td>Ebbo</td>
 		<td>Boss/Elder</td>
-		<td>Sandles</td>
+		<td>Sandals</td>
 		<td>The "foot" part still contains the weak point but is used as a means to push itself around and whip around.<br>The mouth can bite down and do big damage.</td>
 	</tr>
 	<tr>
@@ -161,7 +157,14 @@ img {
 </table>
 
 <hr>
+<h2 id="music_ideas">Music Ideas</h2>
+<p>I think one of the best ways to get to know the feel of a game (besides concept art, of course, which I'm pretty bad at right now) is with music, so I've written a few pieces that I can listen to to get a sense of the game. (I've heavilly compressed these audio files because I feel bad for putting large files willy-nilly on GitHub, so I hope I haven't compressed them too much.)</p>
+<p>Title Theme:<br><audio controls src="./files/title_theme_idea.mp3"></audio></p>
+<p>Camp Theme:<br><audio controls src="./files/camp_idea.mp3"></audio></p>
+<p>I wrote a few more, but I hope these two give you a sense of what I'm going after, or at least for right now.</p>
+<p>I know the GBA can do more than simple audio waves, but I'm not really sure what instruments I want to use right now. I'm thinking it might be nice to take advantage of audio channel 1 and 2's square waves in most of the songs just to make things a little easier, but also I like the square wave :]</p>
 
+<hr>
 <h2 id="first_sprite">First Sprite</h2>
 <p>I just want to create a simple sprite for the main character, if only to use as a placeholder for now; although, now that I've designed him, I might keep him, I don't know yet.</p>
 <img src="./img/placeholder_player_sprite.png" height="96">
