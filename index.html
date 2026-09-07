@@ -1,0 +1,165 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>In Making a Game</title>
+
+<link rel="icon" type="image/png" href="/icon.png">
+<link rel="stylesheet" href="/styles.css">
+
+<style>
+img {
+	image-rendering: pixelated;
+}
+</style>
+</head>
+<body>
+<button onClick="handleToggleDarkModeButton()">Toggle Dark Mode</button>
+
+<h1>In Making a Game</h1>
+<p>Specifically, I'm making a game for the Game Boy Advance... because of course I'm making it for that system :) (love that thing).</p>
+<p>Here, I hope to document my process and progress as I go because I think it'll be interesting to look back at it all and see how I've grown. It'll also be a chance for me to document outside of comments and commits why I'm making the decisions that I am.</p>
+<p>This is just the side-project of all side-projects for me right now, so it'll very likely take me forever to finish. Also, because there will be times that I'll have huge gaps between programming sessions, this document will make it nice for me to look back and see what I was doing (again, outside of commits), but hopefully I won't forget too much...</p>
+<p>Also, note that I'm using <a href="https://github.com/JKSquires/gba-arm-assembler" target="_blank" rel="noopener noreferrer">my own assembler</a> for this game, and I'll try to note when I update things. As I start off, I'll be using version 0.1.</p>
+<p>For sprites and background tiles and stuff, I'm using my <a href="/gba-obj-sprite-maker" target="_blank" rel="noopener noreferrer">GBA OBJ Sprite Maker</a> tool, so the link is here for you too if you wanted it.</p>
+<p>Oh, and one more thing, if it wasn't obvious by now, but <strong>this will have a ton of spoilers in it</strong>, so... do with that as you will.</p>
+<p>Something else I want to note so that you don't get confused (although it may still be a bit confusing at first), but I tend to intermix the use of the personal pronouns "me," "I," "you," "we," etc. and related words--like "my," "your," and "our"--to all refer to myself. In a way, I like to think of it as "me," "I," etc. being myself in the present time of writing or myself in the past, "you" etc. being myself in the future, and "we," etc. being me in all (past, present, and future) together, if you get what I mean.</p>
+
+<!-- Maybe someday, we should add a table of contents kind of thing. If this site gets really large, maybe we should also split the page into sub-pages that get linked from the table of contents -->
+
+<hr>
+
+<h2>Initial Idea</h2>
+<p>This is, of course, going to change over time as I develop new ideas and learn that other ideas are bad, but here is my initial idea for the game exactly as I wrote when I first came up with the game (oh, and yes, I should mention that this game idea came from a dream):</p>
+<p><strong>Monster game</strong> (name in-progress)</p>
+<p>Game where you go into a haunted mansion or something with "evil" monsters. You are taught that you must capture and kill them (maybe they only fight back once you attack them, except for the boss, which initializes the fight itself). Capture being in like rope or cage or something. You hear or see them scream at you when you enter near or battle with them maybe? (Maybe only first see, then others hear only?) As you ascend the mansion, you reach a really hard boss (the "big boss") that, right as you're about to die, turns you into one of the monsters. Somehow, the player is meant to learn that all the monsters were people (cursed by the mansion trying to entice them to take cursed objects from it) and want to be saved. You come across your original human team, and they try to catch and kill you. You yell who you are, but all they hear are monster noises. You eventually find your way to turn back into a human (maybe by creating something in an abandoned research camp/lab and eating it). When the player comes across a monster now, they are either able to catch and kill it like normal (the team is like, "Where were you?" and you're like "Long story, I'll explain later" or something) or the player is able to cure it just like they had with themself (it shouldn't be super obvious because we want the player to figure it out on their own).</p>
+<p>Maybe when the player respawns, they are actually being revived by the team members using their body parts to revive them, unless they were a monster, in which it will load the last save point instead. This means that on a normal death, you don't lose as much (maybe the player will drop some items on the ground where they died), but on a monster death, you lose a lot more. Maybe when you kill monsters, they drop parts that are meant to be given to the researchers, but later they can ask for them back and revive a monster to be able to heal (maybe not all monster parts are just out in the open to be taken because maybe some are being used for research, some taken as souvenirs, and some hidden away in storage. Maybe the player has to trade for some of them with other team members). The team originally came to collect and research the monster parts. Maybe if the player decides to keep killing, they might eventually get a good ranged weapon to be able to use on monsters more effectively because the researchers found a weakness (but think about how to stop players from just killing a bunch, getting the weapon, and then respawning the monsters to get the good ending).</p>
+<p>The whole stage of monsters goes as follows: Human -&gt; Youngo -&gt; Boss -&gt; Gonner; where "gonners" are so far gone that their souls have been so corroded away that they can no longer be turned back into humans. These will be the most common type of monster. Youngos and bosses can be turned back into humans (although the big boss requires a special recipe maybe and saving her is the good ending maybe?). At the end of the game, no matter if the player chose to save monsters or kill them, we can show how many monsters they killed, revived, and saved (with saving including themself).</p>
+<p>Maybe for the "gonners" and the "youngos," they could have a color tint (or I guess palette set) to indicate difficulty level (okay, now that I think of it, that reminds me of Zelda...)</p>
+<p>The crystal on the monsters is the primary way to kill monsters. They can be placed in all sorts of different areas (hard to reach and easy to reach). They correspond to the location of the cursed item from the mansion or town or area or something.</p>
+<table class="line_table">
+	<tr>
+		<th>Initial Monster Concept Art</th>
+		<th>Monster Name</th>
+		<th>Monster Type</th>
+		<th>Cursed Item</td>
+		<th>Notes</th>
+	</tr>
+	<tr>
+		<td><img src="./img/eldor_ica.png"></td>
+		<td>Eldor</td>
+		<td>Big Boss/Eldest</td>
+		<td>Necklace</td>
+		<td>Takes extra potent solution to turn her back into a human.<br>Hairs can be used as whips and shields to push things away and throw things. Maybe can penetrate through the player? Maybe also throw the player. These hairs are kind of used as hands and are used to force the player to have a cursed hat so that they can turn into a monster.<br>The blade legs can poke down and smash things. Can cut. Maybe they can be used a shields?<br>Hairs and arms can be animated sprites, then turn into a dozen or so objects when attacking to have better arbitrary movement? Remember, this only appears in the one room, so there shouldn't be any issue with having a ton of objects like this for one "rope" thing.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/ebbo_ica.png"></td>
+		<td>Ebbo</td>
+		<td>Boss/Elder</td>
+		<td>Sandles</td>
+		<td>The "foot" part still contains the weak point but is used as a means to push itself around and whip around.<br>The mouth can bite down and do big damage.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/malo-malo_ica.png"></td>
+		<td>Malo-Malo</td>
+		<td>Boss/Elder</td>
+		<td>Crown</td>
+		<td>The legs attack and can be hit to disable the leg. Once all legs are down (maybe change the color when hit to darker or something), the monster falls and the player can jump on top and hit the crystal. After like 3-4 hits (and/or a timer), it launches the player away and gets up.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/thwop_ica.png"></td>
+		<td>Thwop</td>
+		<td>Boss/Elder</td>
+		<td>Circlet</td>
+		<td>Explosive balls get shot out the top towards the player and explode after a few seconds.<br>The mouth bites the player if they try to jump in.<br>Spike balls get shot out from the holes on the bottom and roll towards the player (but don't change trajectory).</td>
+	</tr>
+	<tr>
+		<td><img src="./img/stampo_ica.png"></td>
+		<td>Stampo</td>
+		<td>Boss/Elder</td>
+		<td>Belt</td>
+		<td>Hitting its eyes coses them (hitting one closes one, hitting the other can close that one too). Once both eyes are closed, the player can walk under its body to hit the crystal.<br>If the player does not close Stampo's eyes, it will drop its body down on the player to attack, knocking the player away before they can hit the crystal.<br>In the room it is in, there should be platforms so that the player can get over to the other side to attack that eye too.<br>The legs slide around to move.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/king_gloub_ica.png"></td>
+		<td>King Gloub</td>
+		<td>Boss/Elder</td>
+		<td>Sack</td>
+		<td>The player can jump over it (with jump upgrade) and attack its crystal, but it turns around eventually (slowish).<br>King Gloub is very slow.<br>When King Gloub swallows the player, the player dies instantly.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/player_monster_ica.png"></td>
+		<td>Player Monster</td>
+		<td>Youngo</td>
+		<td>Hat</td>
+		<td>The big boss places the hat on the player's head once they get near dead (1 hp). This turns them into a "youngo."</td>
+	</tr>
+	<tr>
+		<td><img src="./img/eb_ica.png"></td>
+		<td>Eb</td>
+		<td>Youngo</td>
+		<td>Shoes</td>
+		<td>Like an inchworm.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/zorb_ica.png"></td>
+		<td>Zorb</td>
+		<td>Youngo</td>
+		<td>Bracelet</td>
+		<td>Scurries up to the player and attacks with arm things.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/gonk_ica.png"></td>
+		<td>Gonk</td>
+		<td>Youngo</td>
+		<td>Mask</td>
+		<td>Charges forward.<br>Maybe when it hits something, its mouth opens, so the way to feed it is to have it ram into the flask and it'll run into it, break it, and then eat it. (Should we make it so you can't jump over it unless you hit it first or get a jump upgrade or something?)</td>
+	</tr>
+	<tr>
+		<td><img src="./img/gloub_ica.png"></td>
+		<td>Gloub</td>
+		<td>Youngo</td>
+		<td>Sack</td>
+		<td>Jumps and/or slides.<br>Bites do big damage, but they're slow.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/finger_ica.png"></td>
+		<td>Finger</td>
+		<td>Youngo</td>
+		<td>Ring</td>
+		<td>Scoots forwards with nail in front.<br>Cuts with its nail to attack.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/stippo_ica.png"></td>
+		<td>Stippo</td>
+		<td>Gonner</td>
+		<td>N/A</td>
+		<td>Can run around, jump, and attack; like jump forward, bite, and jump back sometimes.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/blop_ica.png"></td>
+		<td>Blop</td>
+		<td>Gonner</td>
+		<td>N/A</td>
+		<td>Slow but hits harder than other gonners.<br>Maybe their body kind of goes up and down as it moves and can be annoying to hit because of it.</td>
+	</tr>
+	<tr>
+		<td><img src="./img/stamper_ica.png"></td>
+		<td>Stamper</td>
+		<td>Gonner</td>
+		<td>N/A</td>
+		<td>Walks normal speed and kicks to attack.</td>
+	</tr>
+</table>
+
+<hr>
+
+<h2>First Sprite</h2>
+<p>I just want to create a simple sprite for the main character, if only to use as a placeholder for now; although, now that I've designed him, I might keep him, I don't know yet.</p>
+<img src="./img/placeholder_player_sprite.png" height="96">
+<p>As I started to convert him over to bytes for the game using my OBJ sprite maker, I found things in the tool that I wanted to change/add: being able to remove the gaps and borders between pixels in the editor and being able to right click a pixel to set it to the first palette color (transparent), so I added these features; I'm guessing that I'll be doing a lot of that kind of thing. I'll probably also end up making more tools to help me along the way too.</p>
+
+<button id="scroll_to_top" onClick="location.href='#';">Scroll<br>to top</button>
+<script src="/gba/color_code.js"></script>
+<script src="/scripts.js"></script>
+</body>
+</html>
