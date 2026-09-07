@@ -17,17 +17,22 @@
 <p>This is just the side-project of all side-projects for me right now, so it'll very likely take me forever to finish. Also, because there will be times that I'll have huge gaps between programming sessions, this document will make it nice for me to look back and see what I was doing (again, outside of commits), but hopefully I won't forget too much...</p>
 <p>Also, note that I'm using <a href="https://github.com/JKSquires/gba-arm-assembler" target="_blank" rel="noopener noreferrer">my own assembler</a> for this game, and I'll try to note when I update things. As I start off, I'll be using version 0.1.</p>
 <p>For sprites and background tiles and stuff, I'm using my <a href="/gba-obj-sprite-maker" target="_blank" rel="noopener noreferrer">GBA OBJ Sprite Maker</a> tool, so the link is here for you too if you wanted it.</p>
+<p>For my primary testing, I use <a href="https://problemkaputt.de/gba.htm" target="_blank" rel="noopener noreferrer">no$gba v3.06 debug</a>, so if screenshots look a bit dark or desaturated, that's why: no$gba tries to mimic how the colors would look on a GBA.</p>
 <p>Oh, and one more thing, if it wasn't obvious by now, but <strong>this will have a ton of spoilers in it</strong>, so... do with that as you will.</p>
 <p>Something else I want to note so that you don't get confused (although it may still be a bit confusing at first), but I tend to intermix the use of the personal pronouns "me," "I," "you," "we," etc. and related words--like "my," "your," and "our"--to all refer to myself. In a way, I like to think of it as "me," "I," etc. being myself in the present time of writing or myself in the past, "you" etc. being myself in the future, and "we," etc. being me in all (past, present, and future) together, if you get what I mean.</p>
 
 <!-- Maybe someday, if this site gets really large, we should also split this page into sub-pages that get linked from the table of contents -->
+<!-- Maybe we can make it so that if there is room on the screen, the table of contents is moved into a sidebar for access everywhere -->
 <h2>Contents</h2>
 <ul id="table_of_contents">
 <li><a href="#">In Making a Game</a></li>
 <li><ul>
 	<li><a href="#initial_idea">Initial Idea</a></li>
 	<li><a href="#music_ideas">Music Ideas</a></li>
-	<li><a href="#first_sprite">First Sprite</a></li>
+	<li><a href="initial_player_obj">Initial Player Object</a><ul>
+		<li><a href="#first_sprite">First Sprite</a></li>
+		<li><a href="#first_object">First Object</a></li>
+	</ul></li>
 </ul></li>
 </ul>
 
@@ -35,7 +40,7 @@
 
 <h2 id="initial_idea">Initial Idea</h2>
 <p>This is, of course, going to change over time as I develop new ideas and learn that other ideas are bad, but here is my initial idea for the game exactly as I wrote when I first came up with the game (oh, and yes, I should mention that this game idea came from a dream):</p>
-<p><strong>Monster game</strong> (name in-progress)</p>
+<p><strong>Monster Game</strong> (name in-progress)</p>
 <p>Game where you go into a haunted mansion or something with "evil" monsters. You are taught that you must capture and kill them (maybe they only fight back once you attack them, except for the boss, which initializes the fight itself). Capture being in like rope or cage or something. You hear or see them scream at you when you enter near or battle with them maybe? (Maybe only first see, then others hear only?) As you ascend the mansion, you reach a really hard boss (the "big boss") that, right as you're about to die, turns you into one of the monsters. Somehow, the player is meant to learn that all the monsters were people (cursed by the mansion trying to entice them to take cursed objects from it) and want to be saved. You come across your original human team, and they try to catch and kill you. You yell who you are, but all they hear are monster noises. You eventually find your way to turn back into a human (maybe by creating something in an abandoned research camp/lab and eating it). When the player comes across a monster now, they are either able to catch and kill it like normal (the team is like, "Where were you?" and you're like "Long story, I'll explain later" or something) or the player is able to cure it just like they had with themself (it shouldn't be super obvious because we want the player to figure it out on their own).</p>
 <p>Maybe when the player respawns, they are actually being revived by the team members using their body parts to revive them, unless they were a monster, in which it will load the last save point instead. This means that on a normal death, you don't lose as much (maybe the player will drop some items on the ground where they died), but on a monster death, you lose a lot more. Maybe when you kill monsters, they drop parts that are meant to be given to the researchers, but later they can ask for them back and revive a monster to be able to heal (maybe not all monster parts are just out in the open to be taken because maybe some are being used for research, some taken as souvenirs, and some hidden away in storage. Maybe the player has to trade for some of them with other team members). The team originally came to collect and research the monster parts. Maybe if the player decides to keep killing, they might eventually get a good ranged weapon to be able to use on monsters more effectively because the researchers found a weakness (but think about how to stop players from just killing a bunch, getting the weapon, and then respawning the monsters to get the good ending).</p>
 <p>The whole stage of monsters goes as follows: Human -&gt; Youngo -&gt; Boss -&gt; Gonner; where "gonners" are so far gone that their souls have been so corroded away that they can no longer be turned back into humans. These will be the most common type of monster. Youngos and bosses can be turned back into humans (although the big boss requires a special recipe maybe and saving her is the good ending maybe?). At the end of the game, no matter if the player chose to save monsters or kill them, we can show how many monsters they killed, revived, and saved (with saving including themself).</p>
@@ -165,10 +170,18 @@
 <p>I know the GBA can do more than simple audio waves, but I'm not really sure what instruments I want to use right now. I'm thinking it might be nice to take advantage of audio channel 1 and 2's square waves in most of the songs just to make things a little easier, but also I like the square wave :]</p>
 
 <hr>
-<h2 id="first_sprite">First Sprite</h2>
+<h2 id="initial_player_obj">Initial Player Object</h2>
+<h3 id="first_sprite">First Sprite</h3>
 <p>I just want to create a simple sprite for the main character, if only to use as a placeholder for now; although, now that I've designed him, I might keep him, I don't know yet.</p>
 <img src="./img/placeholder_player_sprite.png" height="96">
 <p>As I started to convert him over to bytes for the game using my OBJ sprite maker, I found things in the tool that I wanted to change/add: being able to remove the gaps and borders between pixels in the editor and being able to right click a pixel to set it to the first palette color (transparent), so I added these features; I'm guessing that I'll be doing a lot of that kind of thing. I'll probably also end up making more tools to help me along the way too.</p>
+
+<h3 id="first_object">First Object</h3>
+<a href="https://github.com/JKSquires/monster-game/commit/8e3d8f517ff12eff1ca51f70647a6443f634af1d" target="_blank" rel="noopener noreferrer">Commit</a>
+<p>In setting up the ROM to then display the player, I have to think about how I want the initial state of the game to be; of course, this doesn't have to be permanent and can always also be changed for different scenes in the game too. For now, I think I'll use background mode 0, 1-dimentional OBJ VRAM mapping, and, for now, I'll turn on the OBJ screen (later, I'll turn on some other background screens, but I'll leave that for then): <code>%0001000001000000</code></p>
+<p>For now, I'm just going to place the player idle sprite starting at char 1 and store the player as OBJ 0, but that might change later if I decide if anything should go before the player. I'm also going to set the player palette in palette 0.</p>
+<p>So here he is:<br><img src="./img/1st_obj.png" width="480"><br>...but because the background is black and his outline is black, it's hard to know if we got that right, so I'll set the first background palette color to white for now to make it a little more clear:<br><img src="./img/1st_obj_w.png" width="480"><br>There we go, looks good; although, the white background makes the player sprite look a little dark, but in the actual game, I think I want the background to be generally pretty dark, so it shouldn't be an issue (though we'll find out later).</p>
+<p>Now that I think about it, I should probably make the sprite a little more vibrant, but I'll do that as I start to design animations later. For now, it'll just feel a bit desaturated.</p>
 
 <button id="scroll_to_top" onClick="location.href='#';">Scroll<br>to top</button>
 <script src="/gba/color_code.js"></script>
