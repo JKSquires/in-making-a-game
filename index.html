@@ -33,6 +33,7 @@
 	<li><a href="#initial_player_obj">Initial Player Object</a><ul>
 		<li><a href="#first_sprite">First Sprite</a></li>
 		<li><a href="#first_object">First Object</a></li>
+		<li><a href="#reading_player_input">Reading Player Input</a></li>
 	</ul></li>
 </ul></li>
 </ul>
@@ -184,6 +185,13 @@
 <p>For now, I'm just going to place the player idle sprite starting at char 1 and store the player as OBJ 0, but that might change later if I decide if anything should go before the player. I'm also going to set the player palette in palette 0.</p>
 <p>So here he is:<br><img src="./img/1st_obj.png" width="480"><br>...but because the background is black and his outline is black, it's hard to know if we got that right, so I'll set the first background palette color to white for now to make it a little more clear:<br><img src="./img/1st_obj_w.png" width="480"><br>There we go, looks good; although, the white background makes the player sprite look a little dark, but in the actual game, I think I want the background to be generally pretty dark, so it shouldn't be an issue (though we'll find out later).</p>
 <p>Now that I think about it, I should probably make the sprite a little more vibrant, but I'll do that as I start to design animations later. For now, it'll just feel a bit desaturated.</p>
+
+<h3 id="reading_player_input">Reading Player Input</h3>
+<a href="https://github.com/JKSquires/monster-game/commit/7d02237cbebc429654784c623c0c0ef42a5fcf64" target="_blank" rel="noopener noreferrer">Commit</a>
+<p>Of course, it isn't a game if there's no interaction, so I want to read player inputs; for now, I'll just read the d-pad left and right buttons and then flip the sprite based on that direction.</p>
+<p>I really don't want to be reading and writing to OAM while the GBA is rendering the screen and I want it to have a little bit of pause between things, so I just wrote in (more like copied from my previous work) a set of instructions that will wait for V-blank ("vertical blank" for the uninitiated, but then, I probably won't explain every piece of jargon, so you guys will just have to pick things up, sorry) to end, and then wait for V-blank to start again. I do this because I want the main loop body to only run once in the vertical-blanking period, so once it runs, it should wait for V-blank to end and then wait for V-blank to start up again before running the body code again; however, this means that there is a chance that the first frame of the game won't be rendered... but, like, I can just make the title screen fade in or something and say it was intentional, sooo....</p>
+<p>During that loop body, I have it read the player object's attribute that includes the horizontal flip flag (which happens to be in attribute 1), read the key input (located at <code>$4000130</code>), check the bits for d-pad left and d-pad right, clear or set the horizontal flip flag based on whether d-pad right or d-pad left is pressed respectively, and finally write back to OAM.</p>
+<p>In the future, if we end up ever doing game logic while the screen is being drawn, we should should store a copy of some objects' data (or all of OAM depending on what we're doing) in EWRAM and then use DMA to copy that data over to OAM when V-blank starts because we shouldn't write to OAM while the PPU is using it to draw (same goes with palette data, but I don't think we'll be writing to that too often outside initialization).</p>
 
 <button id="scroll_to_top" onClick="location.href='#';">Scroll<br>to top</button>
 <script src="/gba/color_code.js"></script>
