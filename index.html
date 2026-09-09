@@ -35,6 +35,9 @@
 		<li><a href="#first_object">First Object</a></li>
 		<li><a href="#reading_player_input">Reading Player Input</a></li>
 	</ul></li>
+	<li><a href="#testing_backgrounds">Testing Backgrounds</a><ul>
+		<li><a href="#first_background_tiles">First Background Tiles</a></li>
+	</ul></li>
 </ul></li>
 </ul>
 
@@ -192,6 +195,15 @@
 <p>I really don't want to be reading and writing to OAM while the GBA is rendering the screen and I want it to have a little bit of pause between things, so I just wrote in (more like copied from my previous work) a set of instructions that will wait for V-blank ("vertical blank" for the uninitiated, but then, I probably won't explain every piece of jargon, so you guys will just have to pick things up, sorry) to end, and then wait for V-blank to start again. I do this because I want the main loop body to only run once in the vertical-blanking period, so once it runs, it should wait for V-blank to end and then wait for V-blank to start up again before running the body code again; however, this means that there is a chance that the first frame of the game won't be rendered... but, like, I can just make the title screen fade in or something and say it was intentional, sooo....</p>
 <p>During that loop body, I have it read the player object's attribute that includes the horizontal flip flag (which happens to be in attribute 1), read the key input (located at <code>$4000130</code>), check the bits for d-pad left and d-pad right, clear or set the horizontal flip flag based on whether d-pad right or d-pad left is pressed respectively, and finally write back to OAM.</p>
 <p>In the future, if we end up ever doing game logic while the screen is being drawn, we should should store a copy of some objects' data (or all of OAM depending on what we're doing) in EWRAM and then use DMA to copy that data over to OAM when V-blank starts because we shouldn't write to OAM while the PPU is using it to draw (same goes with palette data, but I don't think we'll be writing to that too often outside initialization).</p>
+
+<hr>
+<h2 id="testing_backgrounds">Testing Backgrounds</h2>
+<h3 id="first_background_tiles">First Background Tiles</h3>
+<a href="https://github.com/JKSquires/monster-game/commit/660fbcd487dd19cc7cca5af173928cadda046346" target="_blank" rel="noopener noreferrer">Commit</a>
+<p>Right now, it looks like our player is floating in an empty void, so let's add something to it. I drew up a quick floor tile that I'll stick on the bottom of the screen and then position the player to be standing on top of it.</p>
+<img src="./img/placeholder_floor_tile.png" width="32">
+<p>As I'm copying over the palette, I'm remembering that one thing I wanted to implement in my assembler is an align bytes directive that will add a buffer of bytes if needed to make sure that the instructions that come after are aligned well. Right now, I have to manually align things in 4-byte blocks, but it would be nice to be able to do that automatically. I'm a bit busy right now in real life, though, so manual alignment will have to do for now.</p>
+<p>Even though I've copied over the background palette and floor tile, they aren't going to show up until I map them on the screen, but it's getting late; I'll have to do that later.</p>
 
 <button id="scroll_to_top" onClick="location.href='#';">Scroll<br>to top</button>
 <script src="/gba/color_code.js"></script>
