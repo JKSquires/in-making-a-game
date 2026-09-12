@@ -39,6 +39,7 @@
 		<li><a href="#first_background_tiles">First Background Tiles</a></li>
 		<li><a href="#mapping_floor_tiles">Mapping Floor Tiles</a></li>
 	</ul></li>
+	<li><a href="#the_floor_can_move">The Floor Can Move</a></li>
 </ul></li>
 </ul>
 
@@ -214,6 +215,13 @@
 <p>Block 1 (where my tilemap is going to be) is located at <code>$6000800</code>, and each row is <code>$40</code> bytes wide (2 bytes per tile * (256 virtual screen pixel width / 8 pixels per tile) = 64 bytes = $40 bytes). This makes calculating the rows pretty easy: so row 17 starts at <code>$6000C40</code> and row 20 starts at <code>$6000D00</code>. A simple loop does the trick for writing the tile id/number of the floor tile to the tilemap.</p>
 <p>The problem now is that our player is still floating! After a quick repositioning, everything looks good:</p>
 <img src="./img/standing_on_floor.png" width="480">
+
+<h3 id="the_floor_can_move">The Floor Can Move</h3>
+<a href="https://github.com/JKSquires/monster-game/commit/7a382204d705c405e4eebffeef8765a3ec9ec84e" target="_blank" rel="noopener noreferrer">Commit</a>
+<p>Our character can turn, but he can't move... yet. Actually, I think the best thing to move is the background. This will allow us to dynamically add objects to be able to have larger "levels."</p>
+<p>The horizontal and vertical background scrolling are controlled seperately, and for now, I just want to mess with horizontal scrolling. First, I wanted to read the value, modify it based on player input, and write the value back, but it seems to be resetting the value every time and doesn't scroll well...</p>
+<p>If I just store the horizontal scroll in a register (I should store it in RAM at some point), I can just modify that and then write that to the horizontal scroll, it seems to work well! I think storing this value is also going to be useful for tracking object location offsets and whatnot; this means I should store "world position" seperately from OAM and then update OAM on frames.</p>
+<p>It looks like it's scrolling well, but it's hard to tell if it's scrolling all the way. I think adding a block above the floor will let me see, so after setting a block at the beginning of the row 16 and running it, it looks like it scrolls all the way and wraps properly.</p>
 
 <button id="scroll_to_top" onClick="location.href='#';">Scroll<br>to top</button>
 <script src="/gba/color_code.js"></script>
