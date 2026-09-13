@@ -40,6 +40,7 @@
 		<li><a href="#mapping_floor_tiles">Mapping Floor Tiles</a></li>
 	</ul></li>
 	<li><a href="#the_floor_can_move">The Floor Can Move</a></li>
+	<li><a href="#monster_art">Monster Art</a></li>
 </ul></li>
 </ul>
 
@@ -216,12 +217,80 @@
 <p>The problem now is that our player is still floating! After a quick repositioning, everything looks good:</p>
 <img src="./img/standing_on_floor.png" width="480">
 
-<h3 id="the_floor_can_move">The Floor Can Move</h3>
+<hr>
+<h2 id="the_floor_can_move">The Floor Can Move</h2>
 <a href="https://github.com/JKSquires/monster-game/commit/7a382204d705c405e4eebffeef8765a3ec9ec84e" target="_blank" rel="noopener noreferrer">Commit</a>
 <p>Our character can turn, but he can't move... yet. Actually, I think the best thing to move is the background. This will allow us to dynamically add objects to be able to have larger "levels."</p>
 <p>The horizontal and vertical background scrolling are controlled seperately, and for now, I just want to mess with horizontal scrolling. First, I wanted to read the value, modify it based on player input, and write the value back, but it seems to be resetting the value every time and doesn't scroll well...</p>
 <p>If I just store the horizontal scroll in a register (I should store it in RAM at some point), I can just modify that and then write that to the horizontal scroll, it seems to work well! I think storing this value is also going to be useful for tracking object location offsets and whatnot; this means I should store "world position" seperately from OAM and then update OAM on frames.</p>
 <p>It looks like it's scrolling well, but it's hard to tell if it's scrolling all the way. I think adding a block above the floor will let me see, so after setting a block at the beginning of the row 16 and running it, it looks like it scrolls all the way and wraps properly.</p>
+
+<hr>
+<h2 id="monster_art">Monster Art</h2>
+<a href="https://github.com/JKSquires/monster-game/commit/214ca5d17800fb89e8db9aca0e82e5f50a36e754" target="_blank" rel="noopener noreferrer">Commit</a>
+<p>First, I want to draw up the player monster sprite to get a feel for designing monsters. While I'm at it, I might as well update the player's palette to be a bit more vibrant.</p>
+<p>Here's my updated player sprite:<br><img src="./img/player_sprite.png" height="96"><br>and my new player monster sprite:<br><img src="./img/player_monster_sprite.png" height="96"></p>
+<p>I'm really bad at art right now (I'm trying to learn), so I just really want to thank my friend Caleb for giving me tips to make my terrible art not so terrible.</p>
+<p>Anyway, I've also gone ahead and drawn in the Youngos and Gonners. Each one has three difficulty levels: cyan, magenta, and yellow (subtractive color :D ); I've made it so that the color change can be done with a simple palette swap.</p>
+<table class="line_table">
+	<tr>
+		<th>Monster Name</th>
+		<th>Lvl 0 Sprite</th>
+		<th>Lvl 1 Sprite</th>
+		<th>Lvl 2 Sprite</th>
+	</tr>
+	<tr>
+		<td>Eb</td>
+		<td><img src="./img/eb_lvl0.png" width="128"></td>
+		<td><img src="./img/eb_lvl1.png" width="128"></td>
+		<td><img src="./img/eb_lvl2.png" width="128"></td>
+	</tr>
+	<tr>
+		<td>Zorb</td>
+		<td><img src="./img/zorb_lvl0.png" width="128"></td>
+		<td><img src="./img/zorb_lvl1.png" width="128"></td>
+		<td><img src="./img/zorb_lvl2.png" width="128"></td>
+	</tr>
+	<tr>
+		<td>Gonk</td>
+		<td><img src="./img/gonk_lvl0.png" width="128"></td>
+		<td><img src="./img/gonk_lvl1.png" width="128"></td>
+		<td><img src="./img/gonk_lvl2.png" width="128"></td>
+	</tr>
+	<tr>
+		<td>Gloub</td>
+		<td><img src="./img/gloub_lvl0.png" width="128"></td>
+		<td><img src="./img/gloub_lvl1.png" width="128"></td>
+		<td><img src="./img/gloub_lvl2.png" width="128"></td>
+	</tr>
+	<tr>
+		<td>Finger</td>
+		<td><img src="./img/finger_lvl0.png" width="128"></td>
+		<td><img src="./img/finger_lvl1.png" width="128"></td>
+		<td><img src="./img/finger_lvl2.png" width="128"></td>
+	</tr>
+	<tr>
+		<td>Stippo</td>
+		<td><img src="./img/stippo_lvl0.png" width="128"></td>
+		<td><img src="./img/stippo_lvl1.png" width="128"></td>
+		<td><img src="./img/stippo_lvl2.png" width="128"></td>
+	</tr>
+	<tr>
+		<td>Blop</td>
+		<td><img src="./img/blop_lvl0.png" width="128"></td>
+		<td><img src="./img/blop_lvl1.png" width="128"></td>
+		<td><img src="./img/blop_lvl2.png" width="128"></td>
+	</tr>
+	<tr>
+		<td>Stamper</td>
+		<td><img src="./img/stamper_lvl0.png" width="128"></td>
+		<td><img src="./img/stamper_lvl1.png" width="128"></td>
+		<td><img src="./img/stamper_lvl2.png" width="128"></td>
+	</tr>
+</table>
+<p>I haven't put them in the game yet, though; that's for another day.</p>
+<p>I'm thinking of recruiting Caleb to join me in making this game because we've been thinking of making a game together for a while now. I'm not really sure how well this'll work out, but we can try!</p>
+<p>He came up with a potential game idea while we were chatting: <em>Human After All</em>. I think it sounds amazing, but we'll have to think a little bit more about how the title will go along with the gameplay without spoiling anything.</p>
 
 <button id="scroll_to_top" onClick="location.href='#';">Scroll<br>to top</button>
 <script src="/gba/color_code.js"></script>
