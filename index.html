@@ -20,7 +20,7 @@
 <p>For sprites and background tiles and stuff, I'm using my <a href="/gba-obj-sprite-maker" target="_blank" rel="noopener noreferrer">GBA OBJ Sprite Maker</a> tool, so the link is here for you too if you wanted it.</p>
 <p>For my primary testing, I use <a href="https://problemkaputt.de/gba.htm" target="_blank" rel="noopener noreferrer">no$gba v3.06 debug</a>, so if screenshots look a bit dark or desaturated, that's why: no$gba tries to mimic how the colors would look on a GBA.</p>
 <p>Oh, and one more thing, if it wasn't obvious by now, but <strong>this will have a ton of spoilers in it</strong>, so... do with that as you will.</p>
-<p>Something else I want to note so that you don't get confused (although it may still be a bit confusing at first), but I tend to intermix the use of the personal pronouns "me," "I," "you," "we," etc. and related words--like "my," "your," and "our"--to all refer to myself. In a way, I like to think of it as "me," "I," etc. being myself in the present time of writing or myself in the past, "you" etc. being myself in the future, and "we," etc. being me in all (past, present, and future) together, if you get what I mean.</p>
+<p>Something else I want to note so that you don't get confused (although it may still be a bit confusing at first), but I tend to intermix the use of the personal pronouns "me," "I," "we," etc. and related words--like "my" and "our"--to all refer to myself. In a way, I like to think of it as "me," "I," etc. being myself in the present time of writing or myself in the past and "we," etc. being me in all past, present, and future together, if you get what I mean (although, I might also use first-person plural pronouns for me with other folks, so I'll try to make it obvious when I'm using it this way).</p>
 
 <!-- Maybe someday, if this site gets really large, we should also split this page into sub-pages that get linked from the table of contents -->
 <!-- Maybe we can make it so that if there is room on the screen, the table of contents is moved into a sidebar for access everywhere -->
@@ -41,6 +41,7 @@
 	</ul></li>
 	<li><a href="#the_floor_can_move">The Floor Can Move</a></li>
 	<li><a href="#monster_art">Monster Art</a></li>
+	<li><a href="#gravity">Gravity</a></li>
 </ul></li>
 </ul>
 
@@ -291,6 +292,18 @@
 <p>I haven't put them in the game yet, though; that's for another day.</p>
 <p>I'm thinking of recruiting Caleb to join me in making this game because we've been thinking of making a game together for a while now. I'm not really sure how well this'll work out, but we can try!</p>
 <p>He came up with a potential game idea while we were chatting: <em>Human After All</em>. I think it sounds amazing, but we'll have to think a little bit more about how the title will go along with the gameplay without spoiling anything.</p>
+
+<hr>
+<h2 id="gravity">Gravity</h2>
+<a href="https://github.com/JKSquires/monster-game/commit/12ae46ce5f1eae47d058b50f67061d623f3c3af7" target="_blank" rel="noopener noreferrer">Commit</a>
+<p>I think a next logical step would be to add some gravity to the game; well, actually, I'll just add some downward acceleration. To do this, I'm just going to store a vertical/y velocity and add to that every frame (remember, add because down is +y).</p>
+<p>Amazing! ...Except for that the player does not stop on the ground, he just goes through and loops around to the top--ever speeding up (just ignore overflow). Adding a simple "ground" as a hard-coded y-level is simple enough; although, later, I want to base this "grounding" on the tilemap, but that's for future me to deal with :)</p>
+<p>Again, amazing, but now there's no good way to show it off because our player just stands there or walks horizontally; there's no vertical movement... yet! Adding in jumping is really simple: we just give a little impulse to the player's velocity, and voil&agrave;! (There's no animation yet, making it look a little goofy, but, again, that's for future me to handle!)</p>
+<p>We don't want the player to be able to constantly apply that impulse, so we can check if the player is grounded. A na&iuml;ve approach might be to just check if the player's velocity is zero, but one considers it futher, they'll realize that there are certain times when the player has a velocity of zero but is not grounded; for example, think back to physics class: let's say we have a positive velocity with a negative acceleration. The acceleration would decrease the velocity until, oop, we hit zero, then we go negative. This, in a position/time graph, would create an arc (our jump!), therefore our velocity would be zero at the top of the jump too! So, we can just track if the player is grounded seperately from velocity and just set the flag when the player is on the ground and clear it when they start to fall.</p>
+<p>I'm thinking that now would be a good time to start storing things on the stack to free up the CPU registers just in case, so I moved the horizontal scroll, player y-velocity, and player grounded flag onto it (bytes at offset <code>$0</code>, <code>$1</code>, and <code>$2</code> from <code>$3007F00</code> (the initial address in the stack pointer, AKA <code>sp</code> or <code>r13</code>) respectively).</p>
+<p>Oh, yes, and another thing for another day: there's no collision with that block we placed on the ground earlier! We can probably implement that around the same time that we implement using the tilemap for collision rather than hard-coded y-values.</p>
+<p>In adding all of this stuff, I've realized that I could really do with some macros in my assembler, but that would require me to add a more sophisticated pre-processor pass, so I'll deal with that when I get around to it, seeing that it's not <em>super</em> important right now.</p>
+<p>I guess this section is the start of a really messy branching "oh, I should do this later" thing, but that's just how software development goes, right?</p>
 
 <button id="scroll_to_top" onClick="location.href='#';">Scroll<br>to top</button>
 <script src="/gba/color_code.js"></script>
