@@ -42,6 +42,7 @@
 	<li><a href="#the_floor_can_move">The Floor Can Move</a></li>
 	<li><a href="#monster_art">Monster Art</a></li>
 	<li><a href="#gravity">Gravity</a></li>
+	<li><a href="#tilemap-based_floor_collision">Tilemap-based Floor Collision</a></li>
 </ul></li>
 </ul>
 
@@ -60,7 +61,7 @@
 		<th>Initial Monster Concept Art</th>
 		<th>Monster Name</th>
 		<th>Monster Type</th>
-		<th>Cursed Item</td>
+		<th>Cursed Item</th>
 		<th>Notes</th>
 	</tr>
 	<tr>
@@ -304,6 +305,16 @@
 <p>Oh, yes, and another thing for another day: there's no collision with that block we placed on the ground earlier! We can probably implement that around the same time that we implement using the tilemap for collision rather than hard-coded y-values.</p>
 <p>In adding all of this stuff, I've realized that I could really do with some macros in my assembler, but that would require me to add a more sophisticated pre-processor pass, so I'll deal with that when I get around to it, seeing that it's not <em>super</em> important right now.</p>
 <p>I guess this section is the start of a really messy branching "oh, I should do this later" thing, but that's just how software development goes, right?</p>
+
+<hr>
+<h2 id="tilemap-based_floor_collision">Tilemap-Based Floor Collision</h2>
+<a href="https://github.com/JKSquires/monster-game/commit/5225338655a34b05544a217cbd221896d9c0c2b6" target="_blank" rel="noopener noreferrer">Commit</a>
+<p>Simply put: I don't want to have my floor be a hard-coded y-value; instead, I want the floor to be based on the tilemap. All I need to do is be able to calculate which tile offset in the tilemap corresponds with the player's position. Easy enough, I can make a formula:<br>offset = $40 [bytes per row] * floor((x [y-position] + h [sprite height] + 1 [adding one to find tile below]) / 8 [pixels per tile]) + $2 * floor(((x [horizontal scroll] + 112 [player sprite centering] + b [buffer for x-offset in sprite to look at]) &amp; $FF) / 8 [pixels per tile])</p>
+<p>This can be simplified to: offset = $40 * ((y + h + 1) &gt;&gt; 3) + ((((x + 112 + b) &amp; $FF) &gt;&gt; 3) &lt;&lt; 1)</p>
+<p>Which can be simplified even more to: offset = $40 * ((y + h + 1) &gt;&gt; 3) + (((x + 112 + b) &amp; $F8) &gt;&gt; 2)<br>(This last simplification's a bit trickier to see, but if you do the math, it all works out.)</p>
+<p>First, I just tested the center of the sprite to see if it worked, and it did; however, just checking the middle of the sprite does not look so good when the player gets to the edge of a tile because they'll fall part-way across. Instead, the better thing to do would be to check both the left and right of the sprite for floor tiles.</p>
+<p>After playing around with the x-offset buffer for both left and right, I think I got it pretty spot-on!</p>
+<p>The floor works exactly how I want it to, so I can make platforms and structures that the player can stand on now; however, we did not implement collision with the underside of tiles nor, more importantly, collision with the sides of tiles. This means that our player is able to phase right through walls and ceilings, but not floors! I want to say now that it shouldn't be too hard because we can just do a similar thing there with what we did here, but knock on wood, you know?</p>
 
 <button id="scroll_to_top" onClick="location.href='#';">Scroll<br>to top</button>
 <script src="/gba/color_code.js"></script>
