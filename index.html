@@ -16,7 +16,7 @@
 <p>Here, I hope to document my process and progress as I go because I think it'll be interesting to look back at it all and see how I've grown. It'll also be a chance for me to document outside of comments and commits why I'm making the decisions that I am. This also means that I'm going to document everything here in the order that it happens, so not everything that relates to one topic or another will be grouped together, sorry.</p>
 <p>If you want to check out the GitHub repo, <a href="https://github.com/JKSquires/monster-game" target="_blank" rel="noopener noreferrer">here it is</a>, and all commits that relate to sections in this log are linked at the beginning of their respective section.</p>
 <p>This is just the most side-side-project for me right now, so it'll very likely take me forever to finish, if ever. Also, because there will likely be times that I'll have huge gaps between programming sessions, this document will make it nice for me to look back and see what I was doing (again, outside of commits), but hopefully I won't forget too much...</p>
-<p>Also, note that I'm using <a href="https://github.com/JKSquires/gba-arm-assembler" target="_blank" rel="noopener noreferrer">my own assembler</a> for this game, and I'll try to note when I update things. As I start off, I'll be using version 0.1.</p>
+<p>Also, note that I'm using <a href="https://github.com/JKSquires/gba-arm-assembler" target="_blank" rel="noopener noreferrer">my own assembler</a> for this game, and I'll try to note when I update things. As I start off, I'll be using version 0.1.0.</p>
 <p>For sprites and background tiles and stuff, I'm using my <a href="/gba-obj-sprite-maker" target="_blank" rel="noopener noreferrer">GBA OBJ Sprite Maker</a> tool, so the link is here for you too if you wanted it.</p>
 <p>For my primary testing, I use <a href="https://problemkaputt.de/gba.htm" target="_blank" rel="noopener noreferrer">no$gba v3.06 debug</a>, so if screenshots look a bit dark or desaturated, that's why: no$gba tries to mimic how the colors would look on a GBA.</p>
 <p>Oh, and one more thing, if it wasn't obvious by now, but <strong>this will have a ton of spoilers in it</strong>, so... do with that as you will.</p>
@@ -43,6 +43,7 @@
 	<li><a href="#monster_art">Monster Art</a></li>
 	<li><a href="#gravity">Gravity</a></li>
 	<li><a href="#tilemap-based_floor_collision">Tilemap-based Floor Collision</a></li>
+	<li><a href="#full_tilemap_collision">Full Tilemap Collision</a></li>
 </ul></li>
 </ul>
 
@@ -188,14 +189,14 @@
 <p>As I started to convert him over to bytes for the game using my OBJ sprite maker, I found things in the tool that I wanted to change/add: being able to remove the gaps and borders between pixels in the editor and being able to right click a pixel to set it to the first palette color (transparent), so I added these features; I'm guessing that I'll be doing a lot of that kind of thing. I'll probably also end up making more tools to help me along the way too.</p>
 
 <h3 id="first_object">First Object</h3>
-<a href="https://github.com/JKSquires/monster-game/commit/8e3d8f517ff12eff1ca51f70647a6443f634af1d" target="_blank" rel="noopener noreferrer">Commit</a>
+<a href="https://github.com/JKSquires/monster-game/tree/8e3d8f517ff12eff1ca51f70647a6443f634af1d" target="_blank" rel="noopener noreferrer">Repo Snapshot</a>
 <p>In setting up the ROM to then display the player, I have to think about how I want the initial state of the game to be; of course, this doesn't have to be permanent and can always also be changed for different scenes in the game too. For now, I think I'll use background mode 0, 1-dimentional OBJ VRAM mapping, and, for now, I'll turn on the OBJ screen (later, I'll turn on some other background screens, but I'll leave that for then): <code>%0001000001000000</code></p>
 <p>For now, I'm just going to place the player idle sprite starting at char 1 and store the player as OBJ 0, but that might change later if I decide if anything should go before the player. I'm also going to set the player palette in palette 0.</p>
 <p>So here he is:<br><img src="./img/1st_obj.png" width="480"><br>...but because the background is black and his outline is black, it's hard to know if we got that right, so I'll set the first background palette color to white for now to make it a little more clear:<br><img src="./img/1st_obj_w.png" width="480"><br>There we go, looks good; although, the white background makes the player sprite look a little dark, but in the actual game, I think I want the background to be generally pretty dark, so it shouldn't be an issue (though we'll find out later).</p>
 <p>Now that I think about it, I should probably make the sprite a little more vibrant, but I'll do that as I start to design animations later. For now, it'll just feel a bit desaturated.</p>
 
 <h3 id="reading_player_input">Reading Player Input</h3>
-<a href="https://github.com/JKSquires/monster-game/commit/7d02237cbebc429654784c623c0c0ef42a5fcf64" target="_blank" rel="noopener noreferrer">Commit</a>
+<a href="https://github.com/JKSquires/monster-game/tree/7d02237cbebc429654784c623c0c0ef42a5fcf64" target="_blank" rel="noopener noreferrer">Repo Snapshot</a>
 <p>Of course, it isn't a game if there's no interaction, so I want to read player inputs; for now, I'll just read the d-pad left and right buttons and then flip the sprite based on that direction.</p>
 <p>I really don't want to be reading and writing to OAM while the GBA is rendering the screen and I want it to have a little bit of pause between things, so I just wrote in (more like copied from my previous work) a set of instructions that will wait for V-blank ("vertical blank" for the uninitiated, but then, I probably won't explain every piece of jargon, so you guys will just have to pick things up, sorry) to end, and then wait for V-blank to start again. I do this because I want the main loop body to only run once in the vertical-blanking period, so once it runs, it should wait for V-blank to end and then wait for V-blank to start up again before running the body code again; however, this means that there is a chance that the first frame of the game won't be rendered... but, like, I can just make the title screen fade in or something and say it was intentional, sooo....</p>
 <p>During that loop body, I have it read the player object's attribute that includes the horizontal flip flag (which happens to be in attribute 1), read the key input (located at <code>$4000130</code>), check the bits for d-pad left and d-pad right, clear or set the horizontal flip flag based on whether d-pad right or d-pad left is pressed respectively, and finally write back to OAM.</p>
@@ -204,14 +205,14 @@
 <hr>
 <h2 id="testing_backgrounds">Testing Backgrounds</h2>
 <h3 id="first_background_tiles">First Background Tiles</h3>
-<a href="https://github.com/JKSquires/monster-game/commit/660fbcd487dd19cc7cca5af173928cadda046346" target="_blank" rel="noopener noreferrer">Commit</a>
+<a href="https://github.com/JKSquires/monster-game/tree/660fbcd487dd19cc7cca5af173928cadda046346" target="_blank" rel="noopener noreferrer">Repo Snapshot</a>
 <p>Right now, it looks like our player is floating in an empty void, so let's add something to it. I drew up a quick floor tile that I'll stick on the bottom of the screen and then position the player to be standing on top of it.</p>
 <img src="./img/placeholder_floor_tile.png" width="32">
 <p>As I'm copying over the palette, I'm remembering that one thing I wanted to implement in my assembler is an align bytes directive that will add a buffer of bytes if needed to make sure that the instructions that come after are aligned well. Right now, I have to manually align things in 4-byte blocks, but it would be nice to be able to do that automatically. I'm a bit busy right now in real life, though, so manual alignment will have to do for now.</p>
 <p>Even though I've copied over the background palette and floor tile, they aren't going to show up until I map them on the screen, but it's getting late; I'll have to do that later.</p>
 
 <h3 id="mapping_floor_tiles">Mapping Floor Tiles</h3>
-<a href="https://github.com/JKSquires/monster-game/commit/6aa1a4ef5c377823d9b8036b1f0a2300d9da9c9b" target="_blank" rel="noopener noreferrer">Commit</a>
+<a href="https://github.com/JKSquires/monster-game/tree/6aa1a4ef5c377823d9b8036b1f0a2300d9da9c9b" target="_blank" rel="noopener noreferrer">Repo Snapshot</a>
 <p>What I want to do is just draw floor tiles on the bottom 3 rows of the screen (technically, I think, these are the <em>top</em> 3 because +y is down... but I'll just be saying "bottom" for this). I think it'll be best to just set them on the tilemap using a loop rather than using DMA and storing it in ROM because it'll be more efficient space-wise (at least for now).</p>
 <p>The first thing to do is enable a background layer and set its parameters; for now, I'll use BG0, set the screen base block (tilemap) to block 1, and set character base block (tileset) to block 0. I already copied the tile into block 0 earlier, but I accidentally set it to tile 0, so now the entire screen is just floor tiles .-. easy fix though: just add <code>$20</code> when copying it.</p>
 <p>To map the tiles to the right places, I need to determine the location that those rows start in VRAM. Luckily, once I find the start of the first row to draw, I just need to keep drawing until I hit just past the last row, so I only need to know what the first row is that I want to map to--row 17 (there are 20 rows: row 0 to row 19)--and the last row--row 19. Actually, for the last row, I'm going to use the start of row 20 to test against (just test if the offset is less than that of row 20's start).</p>
@@ -221,7 +222,7 @@
 
 <hr>
 <h2 id="the_floor_can_move">The Floor Can Move</h2>
-<a href="https://github.com/JKSquires/monster-game/commit/7a382204d705c405e4eebffeef8765a3ec9ec84e" target="_blank" rel="noopener noreferrer">Commit</a>
+<a href="https://github.com/JKSquires/monster-game/tree/7a382204d705c405e4eebffeef8765a3ec9ec84e" target="_blank" rel="noopener noreferrer">Repo Snapshot</a>
 <p>Our character can turn, but he can't move... yet. Actually, I think the best thing to move is the background. This will allow us to dynamically add objects to be able to have larger "levels."</p>
 <p>The horizontal and vertical background scrolling are controlled seperately, and for now, I just want to mess with horizontal scrolling. First, I wanted to read the value, modify it based on player input, and write the value back, but it seems to be resetting the value every time and doesn't scroll well...</p>
 <p>If I just store the horizontal scroll in a register (I should store it in RAM at some point), I can just modify that and then write that to the horizontal scroll, it seems to work well! I think storing this value is also going to be useful for tracking object location offsets and whatnot; this means I should store "world position" seperately from OAM and then update OAM on frames.</p>
@@ -229,7 +230,7 @@
 
 <hr>
 <h2 id="monster_art">Monster Art</h2>
-<a href="https://github.com/JKSquires/monster-game/commit/214ca5d17800fb89e8db9aca0e82e5f50a36e754" target="_blank" rel="noopener noreferrer">Commit</a>
+<a href="https://github.com/JKSquires/monster-game/tree/214ca5d17800fb89e8db9aca0e82e5f50a36e754" target="_blank" rel="noopener noreferrer">Repo Snapshot</a>
 <p>First, I want to draw up the player monster sprite to get a feel for designing monsters. While I'm at it, I might as well update the player's palette to be a bit more vibrant.</p>
 <p>Here's my updated player sprite:<br><img src="./img/player_sprite.png" height="96"><br>and my new player monster sprite:<br><img src="./img/player_monster_sprite.png" height="96"></p>
 <p>I'm really bad at art right now (I'm trying to learn), so I just really want to thank my friend Caleb for giving me tips to make my terrible art not so terrible.</p>
@@ -296,7 +297,7 @@
 
 <hr>
 <h2 id="gravity">Gravity</h2>
-<a href="https://github.com/JKSquires/monster-game/commit/12ae46ce5f1eae47d058b50f67061d623f3c3af7" target="_blank" rel="noopener noreferrer">Commit</a>
+<a href="https://github.com/JKSquires/monster-game/tree/12ae46ce5f1eae47d058b50f67061d623f3c3af7" target="_blank" rel="noopener noreferrer">Repo Snapshot</a>
 <p>I think a next logical step would be to add some gravity to the game; well, actually, I'll just add some downward acceleration. To do this, I'm just going to store a vertical/y velocity and add to that every frame (remember, add because down is +y).</p>
 <p>Amazing! ...Except for that the player does not stop on the ground, he just goes through and loops around to the top--ever speeding up (just ignore overflow). Adding a simple "ground" as a hard-coded y-level is simple enough; although, later, I want to base this "grounding" on the tilemap, but that's for future me to deal with :)</p>
 <p>Again, amazing, but now there's no good way to show it off because our player just stands there or walks horizontally; there's no vertical movement... yet! Adding in jumping is really simple: we just give a little impulse to the player's velocity, and voil&agrave;! (There's no animation yet, making it look a little goofy, but, again, that's for future me to handle!)</p>
@@ -308,13 +309,29 @@
 
 <hr>
 <h2 id="tilemap-based_floor_collision">Tilemap-Based Floor Collision</h2>
-<a href="https://github.com/JKSquires/monster-game/commit/5225338655a34b05544a217cbd221896d9c0c2b6" target="_blank" rel="noopener noreferrer">Commit</a>
+<a href="https://github.com/JKSquires/monster-game/tree/5225338655a34b05544a217cbd221896d9c0c2b6" target="_blank" rel="noopener noreferrer">Repo Snapshot</a>
 <p>Simply put: I don't want to have my floor be a hard-coded y-value; instead, I want the floor to be based on the tilemap. All I need to do is be able to calculate which tile offset in the tilemap corresponds with the player's position. Easy enough, I can make a formula:<br>offset = $40 [bytes per row] * floor((x [y-position] + h [sprite height] + 1 [adding one to find tile below]) / 8 [pixels per tile]) + $2 * floor(((x [horizontal scroll] + 112 [player sprite centering] + b [buffer for x-offset in sprite to look at]) &amp; $FF) / 8 [pixels per tile])</p>
 <p>This can be simplified to: offset = $40 * ((y + h + 1) &gt;&gt; 3) + ((((x + 112 + b) &amp; $FF) &gt;&gt; 3) &lt;&lt; 1)</p>
 <p>Which can be simplified even more to: offset = $40 * ((y + h + 1) &gt;&gt; 3) + (((x + 112 + b) &amp; $F8) &gt;&gt; 2)<br>(This last simplification's a bit trickier to see, but if you do the math, it all works out.)</p>
 <p>First, I just tested the center of the sprite to see if it worked, and it did; however, just checking the middle of the sprite does not look so good when the player gets to the edge of a tile because they'll fall part-way across. Instead, the better thing to do would be to check both the left and right of the sprite for floor tiles.</p>
 <p>After playing around with the x-offset buffer for both left and right, I think I got it pretty spot-on!</p>
 <p>The floor works exactly how I want it to, so I can make platforms and structures that the player can stand on now; however, we did not implement collision with the underside of tiles nor, more importantly, collision with the sides of tiles. This means that our player is able to phase right through walls and ceilings, but not floors! I want to say now that it shouldn't be too hard because we can just do a similar thing there with what we did here, but knock on wood, you know?</p>
+
+<hr>
+<h2 id="full_tilemap_collision">Full Tilemap Collision</h2>
+<a href="https://github.com/JKSquires/monster-game/tree/a0bd7bb8c96203a0bc96d80102c45b6b894526f3" target="_blank" rel="noopener noreferrer">Repo Snapshot</a>
+<p>First off, I just added an align bytes directive to my assembler (version 0.1.1), so now I can use that in my game.</p>
+<p>Anyway, having only floor collision is kind of silly--how am I going to bang my head against the wall if my head goes right through it?</p>
+
+<p>...I spent a long time not working in this, but did I not say this would happen, with this being a side-side-project and all?</p>
+
+<p>I just did a bunch of refactoring to improve the structure of the code to make it easier to work with later; although, that "later" seems to be now. I refactored a lot of things to open up <code>r0-r3</code> for use in functions, and now I've started pulling things out into functions.</p>
+
+<p>With side collision, I really only need to calculate the offset of the bottom tile in the stack of four tiles that are going to need to be checked on either side of the player because, unlike with the x-axis, the player doesn't need to wrap around, so we can just subtract from the bottom tile's offset to get each one of the higher tiles' offsets (or at least for now; I don't know how I want to approach things later with vertical wrapping, if I even need to that is).</p>
+
+<p>So, it looks like I'm going to need to update my assembler again because I made a silly mistake in shifting the upper nibble of immediate indexing... I accidentally shifted it over 8 bits instead of 4, so it would throw itself into <code>Rt</code>... oops. After a quick easy fix, we're updated to version 0.1.2.</p>
+
+<p>Oh yeah, and collision from the sides now works perfectly! Now onto collision with the ceiling--all we have to do is just check if the block above the player is a floor tile (hmm, maybe I should not refer to it as a floor tile and instead as a collision tile? Eh, floor tile is easier, I guess). In doing this, I had to reorder some logic to be more efficient, but now it works perfectly!</p>
 
 <button id="scroll_to_top" onClick="location.href='#';">Scroll<br>to top</button>
 <script src="/gba/color_code.js"></script>
