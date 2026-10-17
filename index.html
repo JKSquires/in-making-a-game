@@ -44,6 +44,7 @@
 	<li><a href="#gravity">Gravity</a></li>
 	<li><a href="#tilemap-based_floor_collision">Tilemap-based Floor Collision</a></li>
 	<li><a href="#full_tilemap_collision">Full Tilemap Collision</a></li>
+	<li><a href="#two_background_blocks">Two Background Blocks</a></li>
 </ul></li>
 </ul>
 
@@ -332,6 +333,17 @@
 <p>So, it looks like I'm going to need to update my assembler again because I made a silly mistake in shifting the upper nibble of immediate indexing... I accidentally shifted it over 8 bits instead of 4, so it would throw itself into <code>Rt</code>... oops. After a quick easy fix, we're updated to version 0.1.2.</p>
 
 <p>Oh yeah, and collision from the sides now works perfectly! Now onto collision with the ceiling--all we have to do is just check if the block above the player is a floor tile (hmm, maybe I should not refer to it as a floor tile and instead as a collision tile? Eh, floor tile is easier, I guess). In doing this, I had to reorder some logic to be more efficient, but now it works perfectly!</p>
+
+<hr>
+<h2 id="two_background_blocks">TWO Background Blocks!</h2>
+<a href="https://github.com/JKSquires/monster-game/tree/eb757dacaca55ba6b20b2f87f26416694c899a8f" target="_blank" rel="noopener noreferrer">Repo Snapshot</a>
+<p>Blocks--not tiles--you know, the blocks of VRAM that the background tilemap is stored in? Yeah, that. I've been considering later implementing something that builds out an entire room/block at once while the player walks around, and I think that'll be easier to do if I am able to build it all at once instead of in columns. I'm not sure yet if I want to build rooms using pre-defined structures or by storing maps in ROM and just straight copying them in, so I'll think about it. For the meantime, we need to add that whole new block buffer thing!</p>
+
+<p>It's just a single bit to flip in screen size settings, right? Well, yes and no. Yes, it is just a single bit flipped to enable two blocks (I want horizontal, so I'll change <code>%00</code> to <code>%01</code>), but no, our code for horizontal scrolling and collision relies on having only one screen. These are both simple fixes, those being using halfwords to store horizontal scrolling and checking which screen the player when calculating tile offsets respectively.</p>
+
+<p>I feel like it's been a while since I've shown you what the game looks like, so here:</p>
+<img src="./img/2_background_blocks.png" width="480">
+<p>There are three things I want you to notice: 1. I have set the floor to be lower in the new block compared to the old, 2. Those funnily placed tiles are just tiles I placed earlier to test collision things, and 3. Some of the player sprite's colors are a little bit brighter than they were in previous screenshots because I updated the colors in a previous section (it might actually be kinda hard to tell, now that I'm looking at it).</p>
 
 <button id="scroll_to_top" onClick="location.href='#';">Scroll<br>to top</button>
 <script src="/gba/color_code.js"></script>
